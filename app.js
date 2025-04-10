@@ -4,7 +4,6 @@ class Book{
         this.title = title;
         this.author = author;
         this.bookid = bookid;
-
     }
 }
 
@@ -12,13 +11,11 @@ class Book{
 class UI {
     static displayBooks(){
         const books = Store.getBooks();
-
         books.forEach((book) => UI.addBookToList(book));
     }
 
     static addBookToList(book){
         const list = document.querySelector('#book-list');
-
         const row = document.createElement('tr');
 
         row.innerHTML = `
