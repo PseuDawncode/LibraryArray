@@ -52,6 +52,20 @@ class UI {
 document.addEventListener('DOMContentLoaded', UI.displayBooks);
 
 // Event: Add a book
+document.querySelector('#book-form').addEventListener('submit', (e) => {
+    //Prevent actual submit
+    e.preventDefault();
 
+    //Get form values
+    const title = document.querySelector('#title').value;
+    const author= document.querySelector('#author').value;
+    const bookid = document.querySelector('#bookid').value;
+
+    //Instatiate book
+    const book = new Book(title, author, bookid);
+
+    // Add book to UI
+    UI.addBookToList(book);
+});
 
 // Event: Remove a book
