@@ -75,14 +75,21 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
     const author= document.querySelector('#author').value;
     const bookid = document.querySelector('#bookid').value;
 
-    //Instatiate book
-    const book = new Book(title, author, bookid);
+    //Validate
+    if(title === '' || author === '' || bookid === ''){
+        alert('Please fill in all fields');
+    } else {
+        //Instatiate book
+        const book = new Book(title, author, bookid);
 
-    // Add book to UI
-    UI.addBookToList(book);
+        // Add book to UI
+        UI.addBookToList(book);
 
-    //Clear Fields
-    UI.clearFields();
+        //Clear Fields
+        UI.clearFields();
+    }
+
+
 });
 
 // Event: Remove a book
