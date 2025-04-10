@@ -1,6 +1,6 @@
 // Book Class: Represents a book
 class Book{
-    constructor(titile, author, bookid){
+    constructor(title, author, bookid){
         this.title = title;
         this.author = author;
         this.bookid = bookid;
@@ -44,6 +44,20 @@ class UI {
 
         list.appendChild(row);
     }
+
+    static deleteBook(el){
+        if(el.classList.contains('delete')){
+            el.parentElement.parentElement.remove();
+
+        }
+    }
+
+    //Clear Fields functionality
+    static clearFields(){
+        document.querySelector('#title').value = '';
+        document.querySelector('#author').value = '';
+        document.querySelector('#bookid').value = '';
+    }
 }
 
 // Store Class: Handles Storage
@@ -66,6 +80,12 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
 
     // Add book to UI
     UI.addBookToList(book);
+
+    //Clear Fields
+    UI.clearFields();
 });
 
 // Event: Remove a book
+document.querySelector('#book-list').addEventListener('click', (e) => {
+    UI.deleteBook(e.target)
+});
