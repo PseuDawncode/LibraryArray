@@ -4,6 +4,7 @@ class Book{
         this.title = title;
         this.author = author;
         this.bookid = bookid;
+        this.isRead = isReadd;
     }
 }
 
@@ -22,6 +23,13 @@ class UI {
         <td>${book.title}</td>
         <td>${book.author}</td>
         <td>${book.bookid}</td>
+        <td>
+            <button class="btn ${book.isRead ? 
+                'btn-success' : 'btn-secondary'} 
+                btn-sm read-status">
+                ${book.isRead ? 'Read' : 'Unread'}
+            </button>
+        </td>
         <td><a href="#" class="btn btn-danger btn-sm 
         delete"></a></td>
         `;
@@ -33,6 +41,28 @@ class UI {
         if(el.classList.contains('delete')){
             el.parentElement.parentElement.remove();
 
+        }
+    }
+
+    static toggleReadStatus(el){
+        if(el.classList.contains('read-status')){
+            const bookId = el.parentElement.previousElementSibling.textContent;
+            const isCurrentlyRead = el.classList.contains('btn-success');
+            
+            // Toggle the button appearance
+            if(isCurrentlyRead){
+                el.classList.replace('btn-success', 'btn-secondary');
+                el.textContent = 'Unread';
+            } else {
+                el.classList.replace('btn-secondary', 'btn-success');
+                el.textContent = 'Read';
+            }
+            
+            // Update in storage
+            Store.toggleReadStatus(bookId);
+            
+            // Show update message
+            UI.showAlert('Book status updated', 'info');
         }
     }
 
