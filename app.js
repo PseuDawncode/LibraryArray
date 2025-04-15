@@ -141,3 +141,17 @@ document.querySelector('#book-list').addEventListener('click', (e) => {
     // Show remove message
     UI.showAlert('Book Removed', 'info');
 });
+
+document.querySelector('#book-list').addEventListener('change', (e) => {
+    if (e.target.classList.contains('read-toggle')) {
+        const bookid = e.target.getAttribute('data-id');
+        const books = Store.getBooks();
+        books.forEach(book => {
+            if (book.bookid === bookid) {
+                book.isRead = e.target.checked;
+            }
+        });
+        localStorage.setItem('books', JSON.stringify(books));
+        UI.showAlert(`Book marked as ${e.target.checked ? 'Read' : 'Unread'}`, 'secondary');
+    }
+});
