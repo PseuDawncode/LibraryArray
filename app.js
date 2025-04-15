@@ -1,6 +1,53 @@
+function showMenu() {
+    let choice;
+    do {
+        choice = prompt(
+            "📚 Book Menu:\n" +
+            "1. Show all books\n" +
+            "2. Show read books\n" +
+            "3. Show unread books\n" +
+            "4. Exit\n\n" +
+            "Enter your choice (1-4):"
+        );
+
+        switch (choice) {
+            case '1':
+                displayBooksAlert(Store.getBooks(), "All Books");
+                break;
+            case '2':
+                displayBooksAlert(Store.getBooks().filter(book => book.isRead), "Read Books");
+                break;
+            case '3':
+                displayBooksAlert(Store.getBooks().filter(book => !book.isRead), "Unread Books");
+                break;
+            case '4':
+                alert("Goodbye! 👋");
+                break;
+            default:
+                alert("Invalid choice. Please enter a number from 1 to 4.");
+        }
+    } while (choice !== '4');
+}
+
+function displayBooksAlert(books, title) {
+    if (books.length === 0) {
+        alert(`No ${title.toLowerCase()} to display.`);
+        return;
+    }
+
+    let message = `${title}:\n\n`;
+    books.forEach((book, index) => {
+        message += `${index + 1}. ${book.title} by ${book.author} (ID: ${book.bookid})\n`;
+    });
+
+    alert(message);
+}
+
+
+
 // Book Class: Represents a book
 class Book{
-    constructor(title, author, bookid){
+    constructor(title, author, bookid, isRead = false){
         this.title = title;
         this.author = author;
         this.bookid = bookid;
@@ -23,12 +70,10 @@ class UI {
         <td>${book.title}</td>
         <td>${book.author}</td>
         <td>${book.bookid}</td>
-                <td>
-            <input type="checkbox" class="form-check-input read-toggle" 
-                data-id="${book.bookid}" ${book.isRead ? 'checked' : ''}>
-        </td>
-        <td><a href="#" class="btn btn-danger btn-sm 
-        delete"></a></td>
+        <td><input type="checkbox" class="form-check-input read-toggle" 
+         data-id="${book.bookid}" ${book.isRead ? 'checked' : ''}></td>
+        <td><a href="#" class="delete btn btn-danger btn-sm 
+        "></a></td>
         `;
 
         list.appendChild(row);
@@ -59,6 +104,7 @@ class UI {
         document.querySelector('#title').value = '';
         document.querySelector('#author').value = '';
         document.querySelector('#bookid').value = '';
+        document.querySelector('#isRead').value = '';
     }
 }
 
@@ -131,7 +177,8 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
 
 // Event: Remove a book
 document.querySelector('#book-list').addEventListener('click', (e) => {
-    
+    if (e.target.classList.contains('delete')) {
+
     // Remove book from UI
     UI.deleteBook(e.target);
 
@@ -140,18 +187,24 @@ document.querySelector('#book-list').addEventListener('click', (e) => {
 
     // Show remove message
     UI.showAlert('Book Removed', 'info');
+    }
 });
 
+// Event: Toggle read status
 document.querySelector('#book-list').addEventListener('change', (e) => {
     if (e.target.classList.contains('read-toggle')) {
         const bookid = e.target.getAttribute('data-id');
+
         const books = Store.getBooks();
         books.forEach(book => {
             if (book.bookid === bookid) {
                 book.isRead = e.target.checked;
             }
         });
+
         localStorage.setItem('books', JSON.stringify(books));
-        UI.showAlert(`Book marked as ${e.target.checked ? 'Read' : 'Unread'}`, 'secondary');
+
+        UI.showAlert(`Marked as ${e.target.checked ? 'Read' : 'Unread'}`, 'secondary');
     }
 });
+
