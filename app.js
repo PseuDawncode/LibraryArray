@@ -1,4 +1,4 @@
-function showMenu() {
+/**function showMenu() {
     let choice;
     do {
         choice = prompt(
@@ -41,7 +41,7 @@ function displayBooksAlert(books, title) {
     });
 
     alert(message);
-}
+}**/
 
 
 
@@ -104,7 +104,6 @@ class UI {
         document.querySelector('#title').value = '';
         document.querySelector('#author').value = '';
         document.querySelector('#bookid').value = '';
-        document.querySelector('#isRead').value = '';
     }
 }
 
@@ -183,7 +182,7 @@ document.querySelector('#book-list').addEventListener('click', (e) => {
     UI.deleteBook(e.target);
 
     // Remove book from store
-    Store.removeBook(e.target.parentElement.previousElementSibling.textContent);
+    Store.removeBook(e.target.parentElement.parentElement.querySelector('td:nth-child(3)').textContent);
 
     // Show remove message
     UI.showAlert('Book Removed', 'info');
