@@ -1,51 +1,124 @@
-/**function showMenu() {
-    let choice;
-    do {
-        choice = prompt(
-            "📚 Book Menu:\n" +
-            "1. Show all books\n" +
-            "2. Show read books\n" +
-            "3. Show unread books\n" +
-            "4. Exit\n\n" +
-            "Enter your choice (1-4):"
-        );
-
-        switch (choice) {
-            case '1':
-                displayBooksAlert(Store.getBooks(), "All Books");
-                break;
-            case '2':
-                displayBooksAlert(Store.getBooks().filter(book => book.isRead), "Read Books");
-                break;
-            case '3':
-                displayBooksAlert(Store.getBooks().filter(book => !book.isRead), "Unread Books");
-                break;
-            case '4':
-                alert("Goodbye! 👋");
-                break;
-            default:
-                alert("Invalid choice. Please enter a number from 1 to 4.");
-        }
-    } while (choice !== '4');
+// Function to handle More Actions menu
+function handleMoreActions(action) {
+    switch (action) {
+        case 'show-all':
+            displayBooksModal(Store.getBooks(), "All Books");
+            break;
+        case 'show-read':
+            displayBooksModal(Store.getBooks().filter(book => book.isRead), "Read Books");
+            break;
+        case 'show-unread':
+            displayBooksModal(Store.getBooks().filter(book => !book.isRead), "Unread Books");
+            break;
+        case 'exit':
+            break;
+    }
 }
 
-function displayBooksAlert(books, title) {
+// Function to display books in a modal
+function displayBooksModal(books, title) {
     if (books.length === 0) {
-        alert(`No ${title.toLowerCase()} to display.`);
+        UI.showAlert(`No ${title.toLowerCase()} to display.`, 'info');
         return;
     }
 
-    let message = `${title}:\n\n`;
-    books.forEach((book, index) => {
-        message += `${index + 1}. ${book.title} by ${book.author} (ID: ${book.bookid})\n`;
+    let bookList = '';
+    books.forEach(book => {
+        bookList += `
+            <tr>
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td>${book.bookid}</td>
+                <td>${book.isRead ? 'Read' : 'Unread'}</td>
+            </tr>
+        `;
     });
 
-    alert(message);
-}**/
+    // Showing All Books Modal in HTML
+    const modalHTML = `
+        <div class="modal fade" id="booksModal" tabindex="-1" aria-labelledby="booksModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="booksModalLabel">${title}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Book ID</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>${bookList}</tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Add the modal to the body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Initialize and show the modal
+    const modalElement = document.getElementById('booksModal');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+    modalElement.addEventListener('hidden.bs.modal', function () {
+        modalElement.remove();
+    });
+}
+
+// Add the "More Actions" button
+function addMoreActionsButton() {
+
+    const container = document.querySelector('.container');
+    const heading = container.querySelector('h1') || container.firstElementChild;
+    
+    // Dropdown button container
+    const buttonContainer = document.createElement('div');
+    buttonContainer.id = 'moreActionsContainer';
+    buttonContainer.className = 'mb-3 d-flex justify-content-end';
+    buttonContainer.innerHTML = `
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="moreActionsButton" data-bs-toggle="dropdown" aria-expanded="false">
+                More Actions
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="moreActionsButton">
+                <li><a class="dropdown-item" href="#" data-action="show-all">Show All Books</a></li>
+                <li><a class="dropdown-item" href="#" data-action="show-read">Show All Read Books</a></li>
+                <li><a class="dropdown-item" href="#" data-action="show-unread">Show All Unread Books</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" data-action="exit">Exit</a></li>
+            </ul>
+        </div>
+    `;
+    
+    heading.insertAdjacentElement('afterend', buttonContainer);
+    
+    // Event to dropdown items
+    const dropdownItems = buttonContainer.querySelectorAll('.dropdown-item');
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const action = this.getAttribute('data-action');
+            handleMoreActions(action);
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    addMoreActionsButton();
+});
 
 
-
-// Book Class: Represents a book
 class Book{
     constructor(title, author, bookid, isRead = false){
         this.title = title;
@@ -206,4 +279,3 @@ document.querySelector('#book-list').addEventListener('change', (e) => {
         UI.showAlert(`Marked as ${e.target.checked ? 'Read' : 'Unread'}`, 'secondary');
     }
 });
-
