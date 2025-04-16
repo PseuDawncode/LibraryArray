@@ -103,7 +103,7 @@ function addMoreActionsButton() {
     
     heading.insertAdjacentElement('afterend', buttonContainer);
     
-    // Event to dropdown items
+    // Event: Dropdown items
     const dropdownItems = buttonContainer.querySelectorAll('.dropdown-item');
     dropdownItems.forEach(item => {
         item.addEventListener('click', function(e) {
